@@ -1,8 +1,10 @@
-## Welcome to GitHub Pages
+## 사람과교육연구소 사이버 스페이스
 
-You can use the [editor on GitHub](https://github.com/hein-git/hein.space/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
+사람과 교육연구소가 앞으로 사용하게 될 사이버 스페이스 상의 집을 짖기위한 첫 걸음입니다.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+이곳은 아이디어와 프로그램 소스등 모든젓ㄱ의 역사를 기록하기 위한 곳입니다.
+
+단순히 타이틀만이 아니라 과거의 생각과 특정 싯점으로 프로그램을 되돌리는 등 모든 것을 저장하는것을 목표로 합니다.
 
 ### Markdown
 
