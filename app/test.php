@@ -1,5 +1,7 @@
 <?php
 include_once('./_common.php');
+
+$row = sql_fetch("SELECT fold_id FROM he_mbr_fold WHERE up_fold_id = '{$member['mb_id']}'")
 ?>
 <!doctype html>
 <html>
@@ -37,6 +39,6 @@ include_once('./_common.php');
         </div>
     </div>
 </div>
-<input type="hidden" name="foldId" value="" id="foldId"/>
+<input type="hidden" name="foldId" id="foldId" value="<?=$row['fold_id']?>"/>
 </body>
-</html> 
+</html>  
