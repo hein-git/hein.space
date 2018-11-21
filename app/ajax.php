@@ -49,6 +49,7 @@ function getNavBar(){
             ." UNION ALL "
             ." SELECT a.fold_id, a.up_fold_id,a.fold_nm FROM he_mbr_fold a INNER JOIN FOLD b ON a.fold_id = b.up_fold_id ) "
             ." SELECT fold_id, up_fold_id,fold_nm from FOLD";
+    echo $sql;
     $result = sql_query($sql);
     $rtn = array();
     while($row=sql_fetch_array($result)) {
