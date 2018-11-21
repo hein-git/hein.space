@@ -1,5 +1,8 @@
 body {width:100%; margin:0 auto; padding:0;font-family:sans-serif;;background-color: #084B8A;}
 #wrapper {text-align:center;margin:0 auto;padding: 0;width: 95%}
-#drop-area { margin-top: 20px;margin-left: 10px;width: 300px;height: 400px;background-color: white;border: 3px dashed grey}
-.drop-text { margin-top: 70px;color:grey; font-size: 25px; font-weight: bold;}
-#drop-area img {max-width: 200px;}
+#tree {background-color: rgba(245,245,255,0.5) ;left:400px; patting:5px;border: 2px gray solid;height: 400px;text-align: left;position:absolute;z-index : 1;}
+#content { background-color: #fff;border: 5px dashed lightgray;height: 290px}
+#drop-area {margin-top: 10px; height: 100px;background-color: white;border: 5px dashed lightgray}
+.drop-text { margin-top: 30px;color:grey; font-size: 25px; font-weight: bold;}
+#tgBt{ margin-right:15px}
+
