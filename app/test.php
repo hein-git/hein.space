@@ -1,7 +1,11 @@
 <?php
 include_once('./_common.php');
-
-$row = sql_fetch("SELECT fold_id FROM he_mbr_fold WHERE up_fold_id = '{$member['mb_id']}'")
+if(!$mb_id) {
+    alert("로그인한 사용자만 이용이 가능합니다.");
+    exit;
+}
+makeMbrRoot();
+$row = sql_fetch("SELECT fold_id FROM he_mbr_fold  WHERE up_fold_id = '$mb_id'");
 ?>
 <!doctype html>
 <html>
@@ -30,15 +34,50 @@ $row = sql_fetch("SELECT fold_id FROM he_mbr_fold WHERE up_fold_id = '{$member['
 </nav>
 <div id="wrapper">
     <div class="row">
-        <div id="tree" class="col-md-3 col-sm-3"></div>
+        <div id="tree" class="col-md-3 col-sm-3" style="display:none"></div>
         <div class="col-md-9 col-sm-9" id="contentBox">
-            <div id="content"></div>
-            <div id="drop-area">
-            <h3 class="drop-text">Drag & Drop Here</h3>
+            <div id="content">
+                <nav class='navbar navbar-default' role='navigation'>
+                    <div class='navbar-header'><a class='navbar-brand' href='#'>Home</a></div>
+                    <div><ul class='nav navbar-nav' id='navdata'></ul></div>
+                    <div><p class='navbar-text navbar-right'>
+                            <button type='button' class='btn btn-default' id='svBt'>
+                                <span class='glyphicon glyphicon-inbox'></span>
+                            </button>
+                            <button type='button' class='btn btn-default' id='tgBt'>
+                                <span class='glyphicon glyphicon-th-large'></span>
+                            </button>
+                        </p></div>
+                </nav>
+                <table class='table'>
+                    <thead>
+                        <tr>
+                            <th>파일명</th>
+                            <th>유형</th>
+                            <th>크기</th>
+                            <th>등록일</th>
+                        </tr>
+                    </thead>
+                    <tbody id="filelist"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="drop-area" style="display: none">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class='navbar-text navbar-right'>
+                <button class="btn btn-success" onclick="sendFormData()">파일업로드</button>
+                </div>
+                
+            </nav>
+            <ul id="uploadList"></ul>
+            <div class="drop-text">
+            <h4>이곳에 파일을 놓으세요.</h4>
+            <h5>또는</h5>
+            <h3><button class="btn btn-default">파일을 선택하세요</button></h3>
             </div>
         </div>
     </div>
 </div>
-<input type="hidden" name="foldId" id="foldId" value="<?=$row['fold_id']?>"/>
+<input type="hidden" name="foldId"  id="foldId" value="<?=$row['fold_id']?>"/>
 </body>
-</html>  
+</html> 

@@ -1,8 +1,9 @@
 body {width:100%; margin:0 auto; padding:0;font-family:sans-serif;;background-color: #084B8A;}
-#wrapper {text-align:center;margin:0 auto;padding: 0;width: 95%}
+#wrapper {margin:0 auto;padding: 0;width: 95%;max-width: 800px}
 #tree {background-color: rgba(245,245,255,0.5) ;left:400px; patting:5px;border: 2px gray solid;height: 400px;text-align: left;position:absolute;z-index : 1;}
-#content { background-color: #fff;border: 5px dashed lightgray;height: 290px}
-#drop-area {margin-top: 10px; height: 100px;background-color: white;border: 5px dashed lightgray}
-.drop-text { margin-top: 30px;color:grey; font-size: 25px; font-weight: bold;}
+#content { background-color: #fff;border: 5px dashed lightgray;}
+#drop-area {margin: 70px 0 0 30px; width: 560px;height: 300px;background-color: rgba(220,240,250,0.8);border: 5px dashed gray;position:absolute; z-index : 3;}
+.drop-text { margin-top: 100px;color:grey; text-align: center}
 #tgBt{ margin-right:15px}
+#uploadList{position:absolute;}
 

@@ -43,11 +43,12 @@ echo json_encode($rtnMsg);
  * - md5sum이 동일한 파일이 있는 경우 업로드하지 않고 기존 값을 복제한다.
  *
  */
-function FileUpload($mb_id, $fold_id, $tnm, $onm, $type, $size){
+function FileUpload($mb_id, $fold_id, $tnm, $onm, $mime, $size){
     $base = "/web_app/upload/";
+    $type = getFileType($mime);
     $md5sum = md5_file($tnm);
     $row = sql_fetch("select file_id from he_repo_file where md5sum = '$md5sum'");
-    $row2 = sql_fetch("select file_no from he_mbr_file where folder_id = '$fold_id' and file_oname = '$onm'");
+    $row2 = sql_fetch("select file_no from he_mbr_file where fold_id = '$fold_id' and file_oname = '$onm'");
     if (!empty($row['file_id'])) { // 동일한 md5sum 값으로 조회된 결과가 있는지 확인
         /* 동일한 폴더에 동일 파일(md5sum 과 파일명이 동일)을 업로드하면 무시함. */
         if (!empty($row2['file_no']))  return "dup";
@@ -67,11 +68,12 @@ function FileUpload($mb_id, $fold_id, $tnm, $onm, $type, $size){
             . "'$onm', '$type', '$size', now(), now())";
         sql_query($sql,true);
     }
-    $sql = "insert into he_mbr_file (mb_id, folder_id, file_id, file_oname,  reg_dtm)"
+    $sql = "insert into he_mbr_file (mb_id, fold_id, file_id, file_oname,  reg_dtm)"
             . "values ('$mb_id','$fold_id', '$file_id', '$onm', now())";
     sql_query($sql) or die( "$sql");
     return "success";
 }
+
 function rtnErr($msg) {
     echo json_encode( array(
         'status' => 'error',

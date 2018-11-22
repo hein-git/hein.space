@@ -2,6 +2,7 @@
 include_once('./_common.php');
 if(is_ajax()){ 
     if(isset($_POST['cmd']) && !empty($_POST['cmd'])){
+        $mb_id = $member['mb_id'];
         $cmd = $_POST['cmd'];
         switch($cmd){
             case "getTreeData":
@@ -10,6 +11,10 @@ if(is_ajax()){
             case "getNavBar":
                 getNavBar();
                 break;
+            case "getFileList":
+                getFileList();
+                break;
+            
         }
     } else {
         echo "올바른 요청이 아닙니다.";
@@ -20,10 +25,9 @@ if(is_ajax()){
 }
 
 function getTreeData(){
-    $mb_id = $member["mb_id"];
-    $mb_id = 'ekxkaks';
+    global $mb_id;
     $sql = "WITH RECURSIVE FOLD AS ( "
-            . "SELECT fold_id, up_fold_id,fold_nm FROM he_mbr_fold c  WHERE up_fold_id = '$mb_id'  "
+            . "SELECT fold_id, up_fold_id,fold_nm FROM he_mbr_fold  WHERE up_fold_id = '$mb_id'  "
             ." UNION ALL "
             ." SELECT a.fold_id, a.up_fold_id,a.fold_nm FROM he_mbr_fold a INNER JOIN FOLD b ON a.up_fold_id = b.fold_id ) "
             ." SELECT fold_id, up_fold_id,fold_nm from FOLD";
@@ -41,15 +45,13 @@ function getTreeData(){
 }
 
 function getNavBar(){
-    $mb_id = $member["mb_id"];
+    global $mb_id;
     $fold_id = $_POST["id"];
-    $mb_id = 'ekxkaks';
     $sql = "WITH RECURSIVE FOLD AS ( "
-            . "SELECT fold_id, up_fold_id,fold_nm FROM he_mbr_fold c  WHERE fold_id = '$fold_id' and mb_id = '$mb_id'  "
+            . "SELECT fold_id, up_fold_id,fold_nm FROM he_mbr_fold  WHERE fold_id = '$fold_id' and mb_id = '$mb_id'  "
             ." UNION ALL "
             ." SELECT a.fold_id, a.up_fold_id,a.fold_nm FROM he_mbr_fold a INNER JOIN FOLD b ON a.fold_id = b.up_fold_id ) "
             ." SELECT fold_id, up_fold_id,fold_nm from FOLD";
-    echo $sql;
     $result = sql_query($sql);
     $rtn = array();
     while($row=sql_fetch_array($result)) {
@@ -60,6 +62,31 @@ function getNavBar(){
     }
     echo json_encode(array_reverse($rtn));
 }
+
+
+function getFileList(){
+    global $mb_id;
+    $fold_id = $_POST["id"];
+    $sql = "SELECT a.file_id, a.file_oname, b.file_type, b.file_size,b.file_reg_dtm ";
+    $sql .= "FROM he_mbr_file a ";
+    $sql .= "INNER JOIN he_repo_file b ON a.file_id = b.file_id ";
+    $sql .= "WHERE a.fold_id = '$fold_id' ";
+    $sql .= "AND a.mb_id = '$mb_id' ";
+    
+    $result = sql_query($sql);
+    $rtn = array();
+    while($row=sql_fetch_array($result)) {
+        $nodedata = (object)[];
+        $nodedata->id = $row['file_id'];
+        $nodedata->name = $row['file_oname'];
+        $nodedata->type = $row['file_type'];
+        $nodedata->size = addSizeUnit($row['file_size']);
+        $nodedata->reg_dt = $row['file_reg_dtm'];
+        array_push($rtn, $nodedata);        
+    }
+    echo json_encode($rtn);
+}
+
 class TreeData {
     public $text;
     public $href = "#";
