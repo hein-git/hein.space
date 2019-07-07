@@ -47,6 +47,9 @@ function g5_path()
 
 $g5_path = g5_path();
 
+// 아미나 - 상수 추가
+define('APMS_HOST', $g5_path['host']);
+
 include_once($g5_path['path'].'/config.php');   // 설정 파일
 
 unset($g5_path);
@@ -121,7 +124,7 @@ $member = array();
 $board  = array();
 $group  = array();
 $g5     = array();
-
+$qaconfig = array();
 
 //==============================================================================
 // 공통
@@ -615,9 +618,6 @@ $is_demo = false;
 // 방문자수의 접속을 남김
 include_once(G5_BBS_PATH.'/visit_insert.inc.php');
 
-// 일정 기간이 지난 DB 데이터 삭제 및 최적화
-include_once(G5_BBS_PATH.'/db_table.optimize.php');
-
 // common.php 파일을 수정할 필요가 없도록 확장합니다.
 $extend_file = array();
 $tmp = dir(G5_EXTEND_PATH);
@@ -636,6 +636,9 @@ if(!empty($extend_file) && is_array($extend_file)) {
 	unset($file);
 }
 unset($extend_file);
+
+// 일정 기간이 지난 DB 데이터 삭제 및 최적화
+include_once(G5_BBS_PATH.'/db_table.optimize.php');
 
 // 첫로그인 포인트
 if ($is_first_login) {
