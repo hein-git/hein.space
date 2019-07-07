@@ -131,7 +131,8 @@ function apms_colorset_skin($t_val, $c_id, $c_val, $opt='', $size='80') {
 
 	$opt = ($opt) ? $opt : '컬러셋 선택';
 
-	$str = '<select name="'.$c_id.'" style="width:'.$size.'px;">'."\n";
+	$size = (is_numeric($size)) ? $size.'px' : $size;
+	$str = '<select name="'.$c_id.'" style="width:'.$size.';">'."\n";
 	if(!$t_val) $str .= '<option value="">'.$opt.'</option>'."\n";
 	if($t_val && is_dir($skin_path)) {
 		$handle = opendir($skin_path);

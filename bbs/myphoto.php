@@ -85,6 +85,15 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 				} else {
 					$thumb = thumbnail($filename, $temp_dir, $temp_dir, $photo_w, $photo_h, true, true);
 					if($thumb) {
+						if ($size[2] == 2) { //jpg
+							$src = @imagecreatefromjpeg($temp_dir.'/'.$thumb);
+							@imagegif($src, $temp_dir.'/'.$thumb);
+						} else if ($size[2] == 3) { //png
+							$src = @imagecreatefrompng($temp_dir.'/'.$thumb);
+							@imagealphablending($src, true);
+							@imagegif($src, $temp_dir.'/'.$thumb);
+						}
+						chmod($temp_dir.'/'.$thumb, G5_FILE_PERMISSION);
 						copy($temp_dir.'/'.$thumb, $org_photo);
 						chmod($org_photo, G5_FILE_PERMISSION);
 						@unlink($temp_dir.'/'.$thumb);
@@ -102,7 +111,10 @@ function apms_photo_upload($mb_id, $del_photo, $file) {
 }
 
 // 설정 저장-------------------------------------------------------
-if ($mode == "u") apms_photo_upload($member['mb_id'], $del_mb_icon2, $_FILES); //Save
+if ($mode == "u") {
+	apms_photo_upload($member['mb_id'], $del_mb_icon2, $_FILES); //Save
+	goto_url(G5_BBS_URL.'/myphoto.php');
+}
 //--------------------------------------------------------------------
 
 // Page ID

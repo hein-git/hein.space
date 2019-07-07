@@ -11,9 +11,12 @@ if($mode == 'twitter') {
 }
 
 $title = urlencode(str_replace('\"', '"', $title));
-$short_url = googl_short_url($_REQUEST['longurl']);
+
+//https 전용
+$long_url = ($xp['https_url']) ? str_replace('http://', 'https://', $_REQUEST['longurl']) : $_REQUEST['longurl'];
+$short_url = googl_short_url($long_url);
 if(!$short_url) {
-	$short_url = $_REQUEST['longurl'];
+	$short_url = $long_url;
 
 	if($mode == 'naver') { // Naver
 		$short_url = str_replace("&amp;", "%26", $short_url);

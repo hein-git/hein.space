@@ -29,7 +29,7 @@ if($is_login_sub) {
 $skin_path = $member_skin_path;
 $skin_url = $member_skin_url;
 
-$url = $_GET['url'];
+$url = strip_tags($_GET['url']);
 
 // url 체크
 check_url_host($url);

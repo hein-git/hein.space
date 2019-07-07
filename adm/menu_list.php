@@ -30,7 +30,7 @@ $result = sql_query($sql);
 $g5['title'] = "메뉴설정";
 include_once('./admin.head.php');
 
-$colspan = 7;
+$colspan = 8;
 ?>
 
 <div class="local_desc01 local_desc">
@@ -40,14 +40,18 @@ $colspan = 7;
 <form name="fmenulist" id="fmenulist" method="post" action="./menu_list_update.php" onsubmit="return fmenulist_submit(this);">
 <input type="hidden" name="token" value="">
 
-
+<style>
+.td_category { width:200px; }
+#menulist .sub_menu_class.sub_menu2{ padding-left:50px; background-position:27px 5px; }
+</style>
 
 <div id="menulist" class="tbl_head01 tbl_wrap">
     <table>
     <caption><?php echo $g5['title']; ?> 목록</caption>
     <thead>
     <tr>
-        <th scope="col">메뉴</th>
+        <th scope="col">코드</th>
+		<th scope="col">메뉴</th>
         <th scope="col">링크</th>
         <th scope="col">새창</th>
         <th scope="col">순서</th>
@@ -66,17 +70,25 @@ $colspan = 7;
             $sub_menu_class = ' sub_menu_class';
             $sub_menu_info = '<span class="sound_only">'.$row['me_name'].'의 서브</span>';
             $sub_menu_ico = '<span class="sub_menu_ico"></span>';
-        }
+        } else if(strlen($row['me_code']) == 6) {
+            $sub_menu_class = ' sub_menu_class sub_menu2';
+            $sub_menu_info = '<span class="sound_only">'.$row['me_name'].'의 서브</span>';
+            $sub_menu_ico = '<span class="sub_menu_ico"></span>';
+		}
 
         $search  = array('"', "'");
         $replace = array('&#034;', '&#039;');
         $me_name = str_replace($search, $replace, $row['me_name']);
     ?>
-    <tr class="<?php echo $bg; ?> menu_list menu_group_<?php echo substr($row['me_code'], 0, 2); ?>">
-        <td class="td_category<?php echo $sub_menu_class; ?>">
+    <tr class="<?php echo $bg; ?> menu_list menu_group_<?php echo substr($row['me_code'], 0, 2).$sub_class;?>">
+        <td class="td_mngsmall">
+			<?php echo (strlen($row['me_code']) == 2) ? $row['me_code'] : '&nbsp;'?>
+		</td>
+		<td class="td_category<?php echo $sub_menu_class; ?>">
             <input type="hidden" name="code[]" value="<?php echo substr($row['me_code'], 0, 2) ?>">
-            <label for="me_name_<?php echo $i; ?>" class="sound_only"><?php echo $sub_menu_info; ?> 메뉴<strong class="sound_only"> 필수</strong></label>
-            <input type="text" name="me_name[]" value="<?php echo $me_name; ?>" id="me_name_<?php echo $i; ?>" required class="required tbl_input full_input">
+            <input type="hidden" name="sub[]" value="<?php echo (strlen($row['me_code']) == 4) ? '1' : ''; ?>">
+			<label for="me_name_<?php echo $i; ?>" class="sound_only"><?php echo $sub_menu_info; ?> 메뉴<strong class="sound_only"> 필수</strong></label>
+            <input type="text" name="me_name[]" value="<?php echo get_sanitize_input($me_name); ?>" id="me_name_<?php echo $i; ?>" required class="required tbl_input full_input">
         </td>
         <td>
             <label for="me_link_<?php echo $i; ?>" class="sound_only">링크<strong class="sound_only"> 필수</strong></label>
@@ -109,10 +121,15 @@ $colspan = 7;
         </td>
         <td class="td_mng">
             <?php if(strlen($row['me_code']) == 2) { ?>
-            <button type="button" class="btn_add_submenu btn_03 ">추가</button>
-            <?php } ?>
-            <button type="button" class="btn_del_menu btn_02">삭제</button>
-        </td>
+	            <button type="button" class="btn_add_submenu btn_03 ">추가</button>
+		        <button type="button" class="btn_del_menu btn_02">삭제</button>
+			<?php } else if(strlen($row['me_code']) == 4) { ?>
+	            <button type="button" class="btn_add_submenu2 btn_02 ">추가</button>
+		        <button type="button" class="btn_del_submenu btn_02">삭제</button>
+			<?php } else { ?>
+		        <button type="button" class="btn_del_menu btn_02">삭제</button>
+			<?php } ?>
+		</td>
     </tr>
     <?php
     }
@@ -128,7 +145,6 @@ $colspan = 7;
     <button type="button" onclick="return add_menu();" class="btn btn_02">메뉴추가<span class="sound_only"> 새창</span></button>
     <input type="submit" name="act_button" value="확인" class="btn_submit btn ">
 </div>
-
 </form>
 
 <script>
@@ -136,6 +152,11 @@ $(function() {
     $(document).on("click", ".btn_add_submenu", function() {
         var code = $(this).closest("tr").find("input[name='code[]']").val().substr(0, 2);
         add_submenu(code);
+    });
+
+    $(document).on("click", ".btn_add_submenu2", function() {
+        var code = $(this).closest("tr").find("input[name='code[]']").val().substr(0, 2);
+        add_submenu2(code);
     });
 
     $(document).on("click", ".btn_del_menu", function() {
@@ -160,6 +181,28 @@ $(function() {
             });
         }
     });
+
+    $(document).on("click", ".btn_del_submenu", function() {
+        if(!confirm("메뉴를 삭제하시겠습니까?"))
+            return false;
+
+        var $tr = $(this).closest("tr");
+        if($tr.find("td.sub_menu_class").size() > 0) {
+			for ($i=0; $i < 100; $i++) {
+				if($tr.next("tr").find("td.sub_menu2").size() > 0) {
+					$tr.next("tr").remove();
+				} else {
+					break;
+				}
+			}
+			$tr.remove();
+		}
+
+		$("#menulist tr.menu_list").each(function(index) {
+			$(this).removeClass("bg0 bg1")
+				.addClass("bg"+(index % 2));
+		});
+    });
 });
 
 function add_menu()
@@ -177,6 +220,13 @@ function add_menu()
 }
 
 function add_submenu(code)
+{
+    var url = "./menu_form.php?code="+code+"&sub=1";
+    window.open(url, "add_menu", "left=100,top=100,width=550,height=650,scrollbars=yes,resizable=yes");
+    return false;
+}
+
+function add_submenu2(code)
 {
     var url = "./menu_form.php?code="+code;
     window.open(url, "add_menu", "left=100,top=100,width=550,height=650,scrollbars=yes,resizable=yes");
@@ -196,6 +246,20 @@ function base_convert(number, frombase, tobase) {
 
 function fmenulist_submit(f)
 {
+
+    var me_links = document.getElementsByName('me_link[]');
+    var reg = /^javascript/; 
+
+	for (i=0; i<me_links.length; i++){
+        
+	    if( reg.test(me_links[i].value) ){ 
+        
+            alert('링크에 자바스크립트문을 입력할수 없습니다.');
+            me_links[i].focus();
+            return false;
+        }
+    }
+
     return true;
 }
 </script>

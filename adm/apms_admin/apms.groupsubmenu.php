@@ -195,7 +195,7 @@ include_once(G5_PATH.'/head.sub.php');
 				<input type="text" name="as_target[<?php echo $z;?>]" size="20" value="<?php echo $row['as_target'];?>" placeholder="target" class="frm_input">
 			</td>
 			<td align="center">
-				<select name="as_head[<?php echo $z;?>]" style="width:100;">
+				<select name="as_head[<?php echo $z;?>]" style="width:100px;">
 					<option value="">헤더 미사용</option>
 					<?php
 						for ($j=0; $j<count($headlist); $j++) {
@@ -204,12 +204,12 @@ include_once(G5_PATH.'/head.sub.php');
 					?>
 				</select>
 				<div class="sp1"></div>
-				<select name="as_hcolor[<?php echo $z;?>]" style="width:100;">
+				<select name="as_hcolor[<?php echo $z;?>]" style="width:100px;">
 					<?php echo apms_color_options($row['as_hcolor']);?>
 				</select>
 			</td>
 			<td align="center">
-				<select name="as_skin[<?php echo $z;?>]" style="width:100;">
+				<select name="as_skin[<?php echo $z;?>]" style="width:100px;">
 					<option value="">스킨 미사용</option>
 					<?php
 						for ($j=0; $j<count($skinlist); $j++) {

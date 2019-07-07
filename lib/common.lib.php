@@ -294,15 +294,16 @@ function get_file($bo_table, $wr_id)
     while ($row = sql_fetch_array($result))
     {
         $no = $row['bf_no'];
-        $file[$no]['href'] = G5_BBS_URL."/download.php?bo_table=$bo_table&amp;wr_id=$wr_id&amp;no=$no" . $qstr;
+        $bf_content = $row['bf_content'] ? html_purifier($row['bf_content']) : '';
+		$file[$no]['href'] = G5_BBS_URL."/download.php?bo_table=$bo_table&amp;wr_id=$wr_id&amp;no=$no" . $qstr;
         $file[$no]['download'] = $row['bf_download'];
         // 4.00.11 - 파일 path 추가
         $file[$no]['path'] = G5_DATA_URL.'/file/'.$bo_table;
         $file[$no]['size'] = get_filesize($row['bf_filesize']);
         $file[$no]['datetime'] = $row['bf_datetime'];
         $file[$no]['source'] = addslashes($row['bf_source']);
-        $file[$no]['bf_content'] = $row['bf_content'];
-        $file[$no]['content'] = get_text($row['bf_content']);
+        $file[$no]['bf_content'] = $bf_content;
+        $file[$no]['content'] = get_text($bf_content);
         //$file[$no]['view'] = view_file_link($row['bf_file'], $file[$no]['content']);
         $file[$no]['view'] = view_file_link($row['bf_file'], $row['bf_width'], $row['bf_height'], $file[$no]['content']);
         $file[$no]['file'] = $row['bf_file'];
@@ -429,7 +430,11 @@ function get_list($write_row, $board, $skin_url, $subject_len=40)
 
     // 분류명 링크
     $list['ca_name_href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;sca='.urlencode($list['ca_name']);
-
+    if($list['ca_name']) {
+	    $list['ca_name'] = clean_xss_tags($list['ca_name']);
+        //$list['ca_name'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $list['ca_name']);
+	    $list['ca_name'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\^\*]/", "", $list['ca_name']);
+	}
     $list['href'] = G5_BBS_URL.'/board.php?bo_table='.$board['bo_table'].'&amp;wr_id='.$list['wr_id'].$qstr;
     $list['comment_href'] = $list['href'];
 
@@ -994,61 +999,66 @@ function chk_xp_num($point, $xp_point, $max_level, $xp_rate=0) {
 function update_xp($mb_id, $point, $content, $rel_table, $rel_action) {
 	global $g5, $xp;
 
-	if(!$mb_id) return;
-
-	if(!isset($xp['exp_point'])) return;
+	if(!$mb_id || !isset($xp['exp_point'])) return;
 
 	//$point = ($point > 0) ? $point : 0;
 
 	$is_exp = false;
-	if($rel_action) {
-		$rule_action = array();
+	if($xp['exp_point']) { //현재 보유 포인트
+		$is_exp = true;
+	} else {
+		if($rel_action) {
+			$rule_action = array();
 
-		if($xp['exp_write']) 
-			$rule_action[] = "쓰기";
+			if($xp['exp_write']) 
+				$rule_action[] = "쓰기";
 
-		if($xp['exp_comment']) 
-			$rule_action[] = "댓글";
+			if($xp['exp_comment']) 
+				$rule_action[] = "댓글";
 
-		if($xp['exp_read']) 
-			$rule_action[] = "읽기";
+			if($xp['exp_read']) 
+				$rule_action[] = "읽기";
 
-		if($xp['exp_good']) 
-			$rule_action[] = "@good";
+			if($xp['exp_good']) 
+				$rule_action[] = "@good";
 
-		if($xp['exp_nogood']) 
-			$rule_action[] = "@nogood";
+			if($xp['exp_nogood']) 
+				$rule_action[] = "@nogood";
 
-		if(!empty($rule_action) && in_array($rel_action, $rule_action)) {
-			$is_exp = true;
+			if(!empty($rule_action) && in_array($rel_action, $rule_action)) {
+				$is_exp = true;
+			}
 		}
-	}
 
-	if(!$is_exp && $rel_table) {
-		$rule_table = array();
+		if(!$is_exp && $rel_table) {
+			$rule_table = array();
 
-		$rule_table[] = "@exp";
+			$rule_table[] = "@exp";
 
-		if($xp['exp_login']) 
-			$rule_table[] = "@login";
+			if($xp['exp_login']) 
+				$rule_table[] = "@login";
 
-		if($xp['exp_chulsuk']) 
-			$rule_table[] = "@chulsuk";
+			if($xp['exp_chulsuk']) 
+				$rule_table[] = "@chulsuk";
 
-		if($xp['exp_delivery']) 
-			$rule_table[] = "@delivery";
+			if($xp['exp_delivery']) 
+				$rule_table[] = "@delivery";
 
-		if(!empty($rule_table) && in_array($rel_table, $rule_table)) {
-			$is_exp = true;
+			if(!empty($rule_table) && in_array($rel_table, $rule_table)) {
+				$is_exp = true;
+			}
 		}
 	}
 
 	if($is_exp) {
 
-		$mb = sql_fetch(" select as_level, as_exp from {$g5['member_table']} where mb_id = '$mb_id' ");
+		$mb = sql_fetch(" select mb_point, as_level, as_exp from {$g5['member_table']} where mb_id = '$mb_id' ");
 
-		$exp = ($mb['as_exp'] > 0) ? $mb['as_exp'] : 0;
-		$point = $exp + $point;
+		if($xp['exp_point']) { //현재 보유 포인트
+			$point = ($mb['mb_point'] > 0) ? $mb['mb_point'] : 0;
+		} else {
+			$point = ($mb['as_exp'] > 0) ? $point + $mb['as_exp'] : $point;
+		}
 
 		//Caculate Level
 		list($level, $point, $min_xp, $max_xp) = chk_xp_num($point, $xp['xp_point'], $xp['xp_max'], $xp['xp_rate']);
@@ -2977,7 +2987,12 @@ function module_exec_check($exe, $type)
         } else {
             // 바이너리 파일인지
             if($is_linux) {
-                $search = false;
+
+                if ( !function_exists('exec') ) {
+                    alert('exec 함수실행이 불가능하므로 사용할수 없습니다.');
+                }
+
+				$search = false;
                 $isbinary = true;
                 $executable = true;
 
@@ -3122,9 +3137,23 @@ function get_search_string($stx)
 }
 
 // XSS 관련 태그 제거
-function clean_xss_tags($str)
+function clean_xss_tags($str, $check_entities=0)
 {
-    $str = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $str);
+    $str_len = strlen($str);
+    
+    $i = 0;
+    while($i <= $str_len){
+        $result = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $str);
+        
+        if( $check_entities ){
+            $result = str_replace(array('&colon;', '&lpar;', '&rpar;', '&NewLine;', '&Tab;'), '', $result);
+        }
+
+        if((string)$result === (string)$str) break;
+
+        $str = $result;
+        $i++;
+    }
 
     return $str;
 }
@@ -3693,7 +3722,7 @@ function get_head_title($title){
     global $g5;
 
     if( isset($g5['board_title']) && $g5['board_title'] ){
-        $title = $g5['board_title'];
+        $title = strip_tags($g5['board_title']);
     }
 
     return $title;
@@ -3714,10 +3743,34 @@ function is_use_email_certify(){
 
 function get_real_client_ip(){
 
-    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    $real_ip = $_SERVER['REMOTE_ADDR'];
 
-    return $_SERVER['REMOTE_ADDR'];
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/', $_SERVER['HTTP_X_FORWARDED_FOR']) ){
+        $real_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+
+    return preg_replace('/[^0-9.]/', '', $real_ip);
+}
+
+function check_mail_bot($ip=''){
+
+    //아이피를 체크하여 메일 크롤링을 방지합니다.
+    $check_ips = array('211.249.40.');
+    $bot_message = 'bot 으로 판단되어 중지합니다.';
+    
+    if($ip){
+        foreach( $check_ips as $c_ip ){
+            if( preg_match('/^'.preg_quote($c_ip).'/', $ip) ) {
+                die($bot_message);
+            }
+        }
+    }
+
+    // user agent를 체크하여 메일 크롤링을 방지합니다.
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
+    if ($user_agent === 'Carbon' || strpos($user_agent, 'BingPreview') !== false || strpos($user_agent, 'Slackbot') !== false) { 
+        die($bot_message);
+    } 
 }
 
 function get_call_func_cache($func, $args=array()){
@@ -3741,13 +3794,28 @@ function get_call_func_cache($func, $args=array()){
     return $result;
 }
 
-// include 하는 경로에 data file 경로가 포함되어 있는지 체크합니다.
+// include 하는 경로에 data file 경로나 안전하지 않은 경로가 있는지 체크합니다.
 function is_include_path_check($path='', $is_input='')
 {
     if( $path ){
-        if ($is_input){
 
-            if( stripos($path, 'php:') !== false || stripos($path, 'zlib:') !== false || stripos($path, 'bzip2:') !== false || stripos($path, 'zip:') !== false || stripos($path, 'data:') !== false || stripos($path, 'phar:') !== false ){
+        if( strlen($path) > 255 ){
+            return false;
+        }
+
+        if ($is_input){
+            // 장태진 @jtjisgod <jtjisgod@gmail.com> 추가
+            // 보안 목적 : rar wrapper 차단
+
+            if( stripos($path, 'rar:') !== false || stripos($path, 'php:') !== false || stripos($path, 'zlib:') !== false || stripos($path, 'bzip2:') !== false || stripos($path, 'zip:') !== false || stripos($path, 'data:') !== false || stripos($path, 'phar:') !== false ){
+                return false;
+            }
+            
+            $replace_path = str_replace('\\', '/', $path);
+            $slash_count = substr_count(str_replace('\\', '/', $_SERVER['SCRIPT_NAME']), '/');
+            $peer_count = substr_count($replace_path, '../');
+
+            if ( $peer_count && $peer_count > $slash_count ){
                 return false;
             }
 
@@ -3787,14 +3855,20 @@ function is_include_path_check($path='', $is_input='')
                 return false;
             }
 
-            if( preg_match('/\/data\/(file|editor|qa|cache|member|member_image|session|tmp)\/[A-Za-z0-9_]{1,20}\//i', str_replace('\\', '/', $path)) ){
+            if( preg_match('/\/data\/(file|editor|qa|cache|member|member_image|session|tmp)\/[A-Za-z0-9_]{1,20}\//i', $replace_path) ){
+                return false;
+            }
+            if( (preg_match('/\.\.\//i', $replace_path) || preg_match('/^\/.*/i', $replace_path)) && preg_match('/plugin\//i', $replace_path) && preg_match('/okname\//i', $replace_path) ){
+                return false;
+            }
+            if( substr_count($replace_path, './') > 5 ){
                 return false;
             }
         }
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
         
-        if($extension && preg_match('/(jpg|jpeg|png|gif|bmp|conf)$/i', $extension)) {
+        if($extension && preg_match('/(jpg|jpeg|png|gif|bmp|conf|php\-x)$/i', $extension)) {
             return false;
         }
     }

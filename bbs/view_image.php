@@ -6,24 +6,24 @@ $is_no_meta = true;
 $g5['title'] = '이미지 크게보기';
 include_once(G5_PATH.'/head.sub.php');
 
-$filename = preg_replace('/[^A-Za-z0-9 _ .-\/]/', '', $_GET['fn']);
+$filename = preg_replace('/[^A-Za-z0-9 _ .\-\/]/', '', $_GET['fn']);
 
 $extension = pathinfo($filename, PATHINFO_EXTENSION);
 
 if ( ! preg_match('/(jpg|jpeg|png|gif|bmp)$/i', $extension) ){
-    alert_close('확장자가 이미지인것만 요청할수 있습니다.');
+    alert_close('이미지 확장자가 아닙니다.');
 }
 
-if(strpos($filename, 'data/item')) {
+if(strpos($filename, G5_DATA_DIR.'/item')) {
     $editor_file = strstr($filename, 'item');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
-} else if(strpos($filename, 'data/editor')) {
+} else if(strpos($filename, G5_DATA_DIR.'/editor')) {
     $editor_file = strstr($filename, 'editor');
 	$filepath = G5_DATA_PATH.'/'.$editor_file;
-} else if(strpos($filename, 'data/qa')) {
+} else if(strpos($filename, G5_DATA_DIR.'/qa')) {
     $editor_file = strstr($filename, 'qa');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
-} else if(strpos($filename, 'data/file')) {
+} else if(strpos($filename, G5_DATA_DIR.'/file')) {
     $editor_file = strstr($filename, 'file');
     $filepath = G5_DATA_PATH.'/'.$editor_file;
 } else {

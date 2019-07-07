@@ -29,7 +29,8 @@ if (isset($g5['title']) && $g5['title']) {
     $g5_head_title = $g5['title'];
 }
 
-$g5_head_title = apms_get_text($g5_head_title);
+$g5['title'] = strip_tags($g5['title']);
+$g5_head_title = strip_tags($g5_head_title);
 
 // 현재 접속자
 // 게시판 제목에 ' 포함되면 오류 발생
@@ -69,14 +70,22 @@ if($config['cf_add_meta']) {
 }
 
 // SEO META
+$is_use_h1 = false;
 if(!APMS_PRINT && !defined('G5_IS_ADMIN')) {
 	include_once(G5_LIB_PATH.'/apms.meta.lib.php');
+	$is_use_h1 = ($is_no_meta) ? false : true;
 }
 
 ?>
 <title><?php echo $g5_head_title; ?></title>
 <?php
 if (defined('G5_IS_ADMIN')) {
+	if (!defined('ADMIN_SKIN_PATH')) {
+		$admin_skin = $config['cf_8'];
+		$admin_skin = ($admin_skin && is_file(G5_SKIN_PATH.'/admin/'.$admin_skin.'/head.php')) ? $admin_skin : 'basic';
+		define('ADMIN_SKIN_PATH', G5_SKIN_PATH.'/admin/'.$admin_skin);
+		define('ADMIN_SKIN_URL', G5_SKIN_URL.'/admin/'.$admin_skin);
+	}
     echo '<link rel="stylesheet" href="'.ADMIN_SKIN_URL.'/css/admin.css">'.PHP_EOL;
 } else {
     $shop_css = '';
@@ -129,3 +138,9 @@ if(APMS_PRINT) {
 	@include_once($print_skin_path.'/print.head.php');
 }
 ?>
+<?php
+if($is_use_h1) { ?>
+	<h1 style="display:inline-block !important;position:absolute;top:0;left:0;margin:0 !important;padding:0 !important;font-size:0;line-height:0;border:0 !important;overflow:hidden !important">
+	<?php echo $g5_head_title; ?>
+	</h1>
+<?php } ?>

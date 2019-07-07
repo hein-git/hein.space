@@ -220,6 +220,7 @@ if($mode == 'thema') {
 					, seo_key					= '{$_POST['seo_key']}'
 					, seo_desc					= '{$_POST['seo_desc']}'
 					, spam_msg					= '{$_POST['spam_msg']}'
+					, feed_ip					= '{$_POST['feed_ip']}'
 					";
 	sql_query($sql);
 
@@ -1378,6 +1379,14 @@ $harr = array("00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", 
 			}
 		?>
 		<textarea name="lucky_msg" rows="3" id="lucky_msg"><?php echo $xp['lucky_msg'];?></textarea>
+	</td>
+	</tr>
+	<tr>
+	<td><b>피드연동</b></td>
+	<td>허용IP</td>
+	<td>
+		<?php echo help('입력된 IP의 컴퓨터 또는 서버만 /bbs/feed.php 파일에 접근할 수 있습니다. 123.123.+ 도 입력 가능. (엔터로 구분)') ?>
+		<textarea name="feed_ip" rows="3" id="feed_ip"><?php echo $xp['feed_ip'];?></textarea>
 	</td>
 	</tr>
 	<tr>

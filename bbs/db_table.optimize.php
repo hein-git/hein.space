@@ -52,9 +52,9 @@ if($config['cf_leave_day'] > 0) {
     }
 }
 
-// 내글반응삭제 - 180일
-$tmp_response_date = date("Y-m-d H:i:s", G5_SERVER_TIME - (180 * 86400));
-sql_query(" delete from {$g5['apms_response']} where regdate < '{$tmp_response_date}' ", false);
+// 내글반응삭제 - 60일
+$sql = " delete from {$g5['apms_response']} where (TO_DAYS('".G5_TIME_YMDHIS."') - TO_DAYS(regdate)) > '60' ";
+sql_query($sql, false);
 sql_query(" OPTIMIZE TABLE `{$g5['apms_response']}` ", false);
 
 // 음성 캡챠 파일 삭제

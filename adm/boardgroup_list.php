@@ -16,9 +16,10 @@ if (!isset($group['gr_device'])) {
 $sql_common = " from {$g5['group_table']} ";
 
 $sql_search = " where (1) ";
-if ($is_admin != 'super')
-    $sql_search .= " and (gr_admin = '{$member['mb_id']}') ";
-
+if ($is_admin != 'super') {
+    //$sql_search .= " and (gr_admin = '{$member['mb_id']}') ";
+    $sql_search .= " and find_in_set('{$member['mb_id']}', gr_admin) ";
+}
 if ($stx) {
     $sql_search .= " and ( ";
     switch ($sfl) {
@@ -139,7 +140,7 @@ $colspan = 12;
         <td class="td_mng td_input">
         <?php if ($is_admin == 'super'){ ?>
             <label for="gr_admin_<?php echo $i; ?>" class="sound_only">그룹관리자</label>
-            <input type="text" name="gr_admin[<?php echo $i ?>]" value="<?php echo $row['gr_admin'] ?>" id="gr_admin_<?php echo $i ?>" class="frm_input" size="10" maxlength="20">
+            <input type="text" name="gr_admin[<?php echo $i ?>]" value="<?php echo $row['gr_admin'] ?>" id="gr_admin_<?php echo $i ?>" class="frm_input" size="10" maxlength="255">
         <?php }else{ ?>
             <input type="hidden" name="gr_admin[<?php echo $i ?>]" value="<?php echo $row['gr_admin'] ?>"><?php echo $row['gr_admin'] ?>
         <?php } ?>

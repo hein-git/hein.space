@@ -29,7 +29,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 .at-content { position:relative; padding:20px 0px; }
 .at-row { margin-left:-15px; margin-right:-15px; }
 .at-col { position:relative; padding-left:15px; padding-right:15px; padding-top:20px; padding-bottom:20px; }
-.nav-fixed .at-menu { width:100%; z-index:10; left:0px; -webkit-transition: height .4s ease, opacity .3s ease; -o-transition: height .4s ease, opacity .3s ease; transition: height .4s ease, opacity .3s ease; }
+.nav-fixed .at-menu { width:100%; z-index:10; left:0px; }
 @media all and (max-width:991px) {
 	.responsive .at-body .at-container { padding:0px 10px !important; }
 	.responsive .at-body .at-row { margin-left:0px; margin-right:0px; }
@@ -59,14 +59,14 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 .pc-header { padding:10px 0px 0px; text-align:center; }
 .pc-header .at-container { padding:0px 20px 15px; background: url('./header.jpg') no-repeat right top; }
 .pc-header .header-logo { display:inline-block; vertical-align:middle; padding:0px 15px; }
-.pc-header .header-logo a { font-size:44px; line-height:44px; font-family:'Georgia', sans-serif; font-weight:bold; color:#000; }
-.pc-header .header-logo a:hover { color:#000; }
+.pc-header .header-logo a { font-size:44px; line-height:44px; font-family:'Georgia', sans-serif; font-weight:bold; color:#003769; }
+.pc-header .header-logo a:hover { color:#003769; }
 .pc-header .header-logo img { display:block; max-width:100%; max-height:60px; }
 .pc-header .header-desc { display:block; font-size:12px; letter-spacing:-1px; color:#888; margin-top:2px; }
 .pc-header .header-search { display:inline-block; width:260px; vertical-align:middle; }
-.pc-header .header-search form { padding:0px; margin-top:4px; border:4px solid #111; background: #111; }
-.pc-header .header-search input { background: #fff; border:1px solid #111; }
-.pc-header .header-search .btn { color:#fff !important; background: #111 !important; }
+.pc-header .header-search form { padding:0px; margin-top:4px; border:4px solid #003769; background: #003769; }
+.pc-header .header-search input { background: #fff; border:1px solid #003769; }
+.pc-header .header-search .btn { color:#fff !important; background: #003769 !important; }
 .pc-header .header-keyword { padding-top:4px; }
 .en .pc-header .header-keyword { font-size:12px; }
 @media all and (max-width:991px) {
@@ -76,7 +76,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 /********************************************************
 ■ Mobile Header : 모바일 헤더 
 ********************************************************/
-.m-header { display:none; background: rgb(50, 60, 70); }
+.m-header { display:none; background: #005999; }
 .m-header a { color:#fff }
 .m-header .at-container { padding:0px; }
 .m-header .header-wrap { display:table; width:100%; table-layout:fixed; margin:0px; min-width:300px; border-collapse: collapse; }
@@ -91,7 +91,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 /********************************************************
 ■ PC Menu : PC 메뉴바 배경설정
 ********************************************************/
-.pc-menu { position:relative; background: #111; border:0px; z-index:3; box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); -webkit-box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); -moz-box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); }
+.pc-menu { position:relative; background: #005999; border:0px; z-index:3; box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); -webkit-box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); -moz-box-shadow: 0px 5px 5px -2px rgba(25, 25, 25, 0.15); }
 .pc-menu .at-container { position:relative; }
 .pc-menu .sub-slide,
 .pc-menu .sub-shows { display:none; visibility:visible; }
@@ -122,9 +122,9 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 
 /* 공통 스타일 */
 .pc-menu .nav-top { position:absolute; left:0px; top:0px; z-index:10; width:100%; }
-.pc-menu .nav-top .menu-a { display:block; color:#fff; background:#111; font-weight:bold; }
+.pc-menu .nav-top .menu-a { display:block; color:#fff; background:#005999; font-weight:bold; }
 .pc-menu .nav-top .menu-li:hover .menu-a,
-.pc-menu .nav-top .menu-li.on .menu-a { background:#333; }
+.pc-menu .nav-top .menu-li.on .menu-a { background:#17a3dd; }
 .pc-menu .nav-top .menu-li.nav-home { width:60px !important; text-align:center; }
 .pc-menu .nav-top .menu-li.nav-home .menu-a { padding:0px; }
 .pc-menu .nav-top .new { color: rgb(140, 195, 70);}
@@ -151,7 +151,7 @@ blockquote { font-size: 12px; margin:0px 0px 20px; }
 /********************************************************
 ■ PC Right Icon Menu : PC 우측 아이콘 메뉴
 ********************************************************/
-.pc-menu .nav-right { background:#111; position:absolute; top:0px; right:0px; z-index:11; }
+.pc-menu .nav-right { background:#005999; position:absolute; top:0px; right:0px; z-index:11; }
 .pc-menu .nav-right > ul { float:right; list-style:none; padding:0px; margin:0px; }
 .pc-menu .nav-right > ul > li { float:left; position:relative; width:42px; }
 .pc-menu .nav-right > ul > li > a { color:#fff; display:block; text-align:center; }

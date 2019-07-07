@@ -20,7 +20,24 @@ switch($type) {
                     from {$g5['content_table']}
                     order by co_id ";
         break;
-    default:
+    case 'pid':
+        $sql = " select html_id as pid, bo_subject as subject, as_file
+                    from {$g5['apms_page']}
+					where as_html = '0' and as_file <> ''
+                    order by id ";
+        break;
+    case 'hid':
+        $sql = " select html_id as hid, bo_subject as subject
+                    from {$g5['apms_page']}
+					where as_html = '1'
+                    order by id ";
+        break;
+    case 'category':
+        $sql = " select ca_id as id, ca_name as subject
+                    from {$g5['g5_shop_category_table']}
+                    order by ca_id asc ";
+        break;
+	default:
         $sql = '';
         break;
 }
@@ -33,7 +50,13 @@ if($sql) {
     for($i=0; $row=sql_fetch_array($result); $i++) {
         if($i == 0) {
 
-    $bbs_subject_title = ($type == 'board') ? '게시판제목' : '제목';
+	if($type == 'board') {
+	    $bbs_subject_title = '게시판제목';
+	} else if($type == 'category') {
+	    $bbs_subject_title = '분류명';
+	} else {
+	    $bbs_subject_title = '제목';
+	}
 ?>
 
 <div class="tbl_head01 tbl_wrap">
@@ -43,8 +66,10 @@ if($sql) {
         <th scope="col"><?php echo $bbs_subject_title; ?></th>
         <?php if($type == 'board'){ ?>
             <th scope="col">게시판 그룹</th>
+        <?php } else if($type == 'category'){ ?>
+            <th scope="col">분류코드</th>
         <?php } ?>
-        <th scope="col">선택</th>
+		<th scope="col">선택</th>
     </tr>
     </thead>
     <tbody>
@@ -52,7 +77,7 @@ if($sql) {
 <?php }
         switch($type) {
             case 'group':
-                $link = G5_BBS_URL.'/group.php?gr_id='.$row['id'];
+                $link = G5_BBS_URL.'/main.php?gid='.$row['id'];
                 break;
             case 'board':
                 $link = G5_BBS_URL.'/board.php?bo_table='.$row['id'];
@@ -60,10 +85,20 @@ if($sql) {
             case 'content':
                 $link = G5_BBS_URL.'/content.php?co_id='.$row['id'];
                 break;
-            default:
+            case 'pid':
+                $link = G5_URL.'/'.$row['as_file'];
+                break;
+            case 'hid':
+                $link = G5_BBS_URL.'/page.php?hid='.$row['hid'];
+                break;
+            case 'category':
+                $link = G5_SHOP_URL.'/list.php?ca_id='.$row['id'];
+                break;
+			default:
                 $link = '';
                 break;
         }
+
 ?>
 
     <tr>
@@ -73,7 +108,9 @@ if($sql) {
         $group = get_call_func_cache('get_group', array($row['gr_id']));
         ?>
         <td><?php echo $group['gr_subject']; ?></td>
-        <?php } ?>
+        <?php } else if($type == 'category'){ ?>
+        <td><?php echo $row['id']; ?></td>
+		<?php } ?>
         <td class="td_mngsmall">
             <input type="hidden" name="subject[]" value="<?php echo preg_replace('/[\'\"]/', '', $row['subject']); ?>">
             <input type="hidden" name="link[]" value="<?php echo $link; ?>">

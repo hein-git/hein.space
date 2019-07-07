@@ -1283,7 +1283,7 @@ $pg_anchor = '<ul class="anchor">
 		<tr>
             <th scope="row"><label for="bo_content_head">상단 내용</label></th>
             <td>
-                <?php echo editor_html("bo_content_head", get_text($board['bo_content_head'], 0)); ?>
+                <?php echo editor_html("bo_content_head", get_text(html_purifier($board['bo_content_head']), 0)); ?>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_content_head" value="1" id="chk_grp_content_head">
@@ -1295,7 +1295,7 @@ $pg_anchor = '<ul class="anchor">
         <tr>
             <th scope="row"><label for="bo_content_tail">하단 내용</label></th>
             <td>
-                <?php echo editor_html("bo_content_tail", get_text($board['bo_content_tail'], 0)); ?>
+                <?php echo editor_html("bo_content_tail", get_text(html_purifier($board['bo_content_tail']), 0)); ?>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_content_tail" value="1" id="chk_grp_content_tail">
@@ -1307,7 +1307,7 @@ $pg_anchor = '<ul class="anchor">
         <tr>
             <th scope="row"><label for="bo_mobile_content_head">모바일 상단 내용</label></th>
             <td>
-                <?php echo editor_html("bo_mobile_content_head", get_text($board['bo_mobile_content_head'], 0)); ?>
+                <?php echo editor_html("bo_mobile_content_head", get_text(html_purifier($board['bo_mobile_content_head']), 0)); ?>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_mobile_content_head" value="1" id="chk_grp_mobile_content_head">
@@ -1319,7 +1319,7 @@ $pg_anchor = '<ul class="anchor">
         <tr>
             <th scope="row"><label for="bo_mobile_content_tail">모바일 하단 내용</label></th>
             <td>
-                <?php echo editor_html("bo_mobile_content_tail", get_text($board['bo_mobile_content_tail'], 0)); ?>
+                <?php echo editor_html("bo_mobile_content_tail", get_text(html_purifier($board['bo_mobile_content_tail']), 0)); ?>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_mobile_content_tail" value="1" id="chk_grp_mobile_content_tail">
@@ -1332,7 +1332,7 @@ $pg_anchor = '<ul class="anchor">
 		 <tr>
             <th scope="row"><label for="bo_insert_content">글쓰기 기본 내용</label></th>
             <td>
-                <textarea id="bo_insert_content" name="bo_insert_content" rows="5"><?php echo $board['bo_insert_content'] ?></textarea>
+                <textarea id="bo_insert_content" name="bo_insert_content" rows="5"><?php echo html_purifier($board['bo_insert_content']); ?></textarea>
             </td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_insert_content" value="1" id="chk_grp_insert_content">
@@ -1657,8 +1657,8 @@ $pg_anchor = '<ul class="anchor">
                 <label for="bo_<?php echo $i ?>_subj">여분필드 <?php echo $i ?> 제목</label>
                 <input type="text" name="bo_<?php echo $i ?>_subj" id="bo_<?php echo $i ?>_subj" value="<?php echo get_text($board['bo_'.$i.'_subj']) ?>" class="frm_input">
                 <label for="bo_<?php echo $i ?>">여분필드 <?php echo $i ?> 값</label>
-                <input type="text" name="bo_<?php echo $i ?>" value="<?php echo get_text($board['bo_'.$i]) ?>" id="bo_<?php echo $i ?>" class="frm_input">
-            </td>
+                <input type="text" name="bo_<?php echo $i ?>" value="<?php echo get_text($board['bo_'.$i]) ?>" id="bo_<?php echo $i ?>" class="frm_input extra-value-input">
+			</td>
             <td class="td_grpset">
                 <input type="checkbox" name="chk_grp_<?php echo $i ?>" value="1" id="chk_grp_<?php echo $i ?>">
                 <label for="chk_grp_<?php echo $i ?>">그룹적용</label>

@@ -8,11 +8,11 @@ if (!count($_POST['chk'])) {
     alert($_POST['act_button']." 하실 항목을 하나 이상 체크하세요.");
 }
 
-auth_check($auth[$sub_menu], 'w');
-
 check_admin_token();
 
 if ($_POST['act_button'] == "선택수정") {
+
+	auth_check($auth[$sub_menu], 'w');
 
 	//멤버쉽 해제 등급
 	$is_membership_withdraw = (defined('APMS_MEMBERSHIP_WITHDRAW') && APMS_MEMBERSHIP_WITHDRAW > 0) ? APMS_MEMBERSHIP_WITHDRAW : 2;
@@ -74,6 +74,8 @@ if ($_POST['act_button'] == "선택수정") {
 
 } else if ($_POST['act_button'] == "선택삭제" || $_POST['act_button'] == "완전삭제") {
 
+	auth_check($auth[$sub_menu], 'd');
+
     for ($i=0; $i<count($_POST['chk']); $i++)
     {
         // 실제 번호를 넘김
@@ -100,9 +102,10 @@ if ($_POST['act_button'] == "선택수정") {
     }
 }
 
-if ($msg)
+if ($msg) {
     //echo '<script> alert("'.$msg.'"); </script>';
     alert($msg);
+}
 
 goto_url('./member_list.php?'.$qstr);
 ?>

@@ -77,10 +77,11 @@ for ($i=0; $row=sql_fetch_array($result); $i++) {
 ?>
 	<item>
 	<title><?php echo specialchars_replace(apms_get_text($row['it_name'])); ?></title>
-	<link><?php echo specialchars_replace($link); ?></link>
+	<link><?php echo $link; ?></link>
 	<description><![CDATA[<?php echo conv_content($rss_img.$rss_content, 1); ?>]]></description>
 	<dc:creator><?php echo specialchars_replace($author['mb_nick']); ?></dc:creator>
-	<dc:date><?php echo $date ?></dc:date>
+	<pubDate><?php echo $date ?></pubDate>
+	<guid><?php echo $link; ?></guid>
 	</item>
 <?php } ?>
 </channel>

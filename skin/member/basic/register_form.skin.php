@@ -353,19 +353,19 @@ $(function() {
 
 	<?php if($config['cf_cert_use'] && $config['cf_cert_ipin']) { ?>
 	// 아이핀인증
-	$("#win_ipin_cert").click(function() {
+	$("#win_ipin_cert").click(function(e) {
 		if(!cert_confirm())
 			return false;
 
 		var url = "<?php echo G5_OKNAME_URL; ?>/ipin1.php";
-		certify_win_open('kcb-ipin', url);
+		certify_win_open('kcb-ipin', url, e);
 		return;
 	});
 
 	<?php } ?>
 	<?php if($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
 	// 휴대폰인증
-	$("#win_hp_cert").click(function() {
+	$("#win_hp_cert").click(function(e) {
 		if(!cert_confirm())
 			return false;
 
@@ -390,7 +390,7 @@ $(function() {
 		}
 		?>
 
-		certify_win_open("<?php echo $cert_type; ?>", "<?php echo $cert_url; ?>");
+		certify_win_open("<?php echo $cert_type; ?>", "<?php echo $cert_url; ?>", e);
 		return;
 	});
 	<?php } ?>

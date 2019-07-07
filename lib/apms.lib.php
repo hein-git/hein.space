@@ -2721,6 +2721,7 @@ function apms_link_video($link, $one='', $img='') {
 
 	$j = 0;
 	$video = '';
+	$link = (is_array($link)) ? $link : array();
 	for ($i=1; $i<=count($link); $i++) {
 
 		if (!$link[$i]) continue;
@@ -3062,7 +3063,12 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 		$list['name'] = $list['qa_name'];
 		$list['href'] = G5_BBS_URL.'/qaview.php?qa_id='.$list['qa_id'];
 		$list['photo'] = apms_photo_url($list['mb_id']); //회원사진
-        $list['category'] = $list['qa_category'];
+	    if($list['qa_category']) {
+		    $list['qa_category'] = clean_xss_tags($list['qa_category']);
+	        //$list['qa_category'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $list['qa_category']);
+		    $list['qa_category'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\^\*]/", "", $list['qa_category']);
+		}
+		$list['category'] = $list['qa_category'];
 		$list['comment'] = ($list['qa_status']) ? 1 : 0;
 	} else {
 		$list['new'] = ($list['wr_datetime'] >= date("Y-m-d H:i:s", G5_SERVER_TIME - ($new * 3600))) ? true : false;
@@ -3070,7 +3076,6 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 		$list['date'] = strtotime($list['wr_datetime']);
 		$list['photo'] = apms_photo_url($list['mb_id']); //회원사진
 		$list['name'] = $list['wr_name'];
-        $list['category'] = $list['ca_name'];
         $list['hit'] = $list['wr_hit'];
         $list['good'] = $list['wr_good'];
         $list['nogood'] = $list['wr_nogood'];
@@ -3138,6 +3143,15 @@ function thema_widget_write_list($type, $bo_table, $row, $new=24, $thumb_width=0
 				$list['icon_extra'] = 'quiz';
 			}
 		}
+
+		// 분류
+	    if($list['ca_name']) {
+		    $list['ca_name'] = clean_xss_tags($list['ca_name']);
+	        //$list['ca_name'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $list['ca_name']);
+		    $list['ca_name'] = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\^\*]/", "", $list['ca_name']);
+		}
+
+        $list['category'] = $list['ca_name'];
 
 		// 확장데이터
 		if($list['as_extend']) {
@@ -3691,8 +3705,9 @@ function apms_chk_auto_menu($s='', $mobile='', $type='') {
 					$list[$z]['sub'][$j]['is_page'] = false;
 					$list[$z]['sub'][$j]['href'] = ($row2['as_link']) ? $row2['as_link'] : G5_SHOP_URL.'/list.php?ca_id='.$row2['ca_id']; //링크
 
+					$c = $row2['ca_id'];
+
 					if($is_new) {
-						$c = $row2['ca_id'];
 						$list[$z]['sub'][$j]['new'] = (isset($new[$c]) && $new[$c]) ? 'new' : 'old';
 					} else {
 						$list[$z]['sub'][$j]['new'] = 'old';
@@ -3725,8 +3740,9 @@ function apms_chk_auto_menu($s='', $mobile='', $type='') {
 							$list[$z]['sub'][$j]['sub'][$k]['line'] = ($row3['as_line']) ? apms_fa($row3['as_line']) : ''; //라인
 							$list[$z]['sub'][$j]['sub'][$k]['sp'] = $row3['as_sp']; //구분
 
+							$c = $row3['ca_id'];
+
 							if($is_new) {
-								$c = $row3['ca_id'];
 								$list[$z]['sub'][$j]['sub'][$k]['new'] = (isset($new[$c]) && $new[$c]) ? 'new' : 'old';
 							} else {
 								$list[$z]['sub'][$j]['sub'][$k]['new'] = 'old';
@@ -3748,8 +3764,9 @@ function apms_chk_auto_menu($s='', $mobile='', $type='') {
 			$list[$z]['gr_id'] = $row['ca_id']; //그룹 아이디
 			$list[$z]['is_sub'] = ($j > 0) ? true : false;
 
+			$c = $row['ca_id'];
+
 			if($is_new) {
-				$c = $row['ca_id'];
 				$list[$z]['new'] = (isset($new[$c]) && $new[$c]) ? 'new' : 'old';
 			} else {
 				$list[$z]['new'] = 'old';
@@ -3918,8 +3935,8 @@ function apms_auto_menu($mode='') {
 						$n = 0;
 						for($k=0; $k < count($tmp[$i]['sub'][$j]['sub']); $k++) {
 
-							if($is_admin !== 'super' && $tmp[$i]['sub'][$j]['subj'][$k]['show']) {
-								if(apms_auth($tmp[$i]['sub'][$j]['subj'][$k]['grade'], $tmp[$i]['sub'][$j]['subj'][$k]['equal'], $tmp[$i]['sub'][$j]['subj'][$k]['min'], $tmp[$i]['sub'][$j]['subj'][$k]['max'], 1)) continue;
+							if($is_admin !== 'super' && $tmp[$i]['sub'][$j]['sub'][$k]['show']) {
+								if(apms_auth($tmp[$i]['sub'][$j]['sub'][$k]['grade'], $tmp[$i]['sub'][$j]['sub'][$k]['equal'], $tmp[$i]['sub'][$j]['sub'][$k]['min'], $tmp[$i]['sub'][$j]['sub'][$k]['max'], 1)) continue;
 							}
 
 							$tmp[$i]['sub'][$j]['sub'][$k]['name'] = ($tmp[$i]['sub'][$j]['sub'][$k]['icon']) ? $tmp[$i]['sub'][$j]['sub'][$k]['icon'].' '.$tmp[$i]['sub'][$j]['sub'][$k]['menu'] : $tmp[$i]['sub'][$j]['sub'][$k]['menu'];
@@ -5546,12 +5563,9 @@ function alert_modal($msg, $error=true) {
 function apms_board_new($field, $bo_table, $wr_id, $sign='+ 1') {
     global $g5;
 
-	$where = " where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ";
-	$query = " select count(*) as cnt from {$g5['board_new_table']} $where ";
-	$row = sql_fetch($query, false);
-	if($row['cnt']) {
-		$query = " update {$g5['board_new_table']} set $field = $field $sign $where ";
-		sql_query($query, false);
+	$row = sql_fetch(" select bn_id from {$g5['board_new_table']} where bo_table = '{$bo_table}' and wr_id = '{$wr_id}' ", false);
+	if(isset($row['bn_id']) && $row['bn_id']) {
+		sql_query(" update {$g5['board_new_table']} set $field = $field $sign where bn_id = '{$row['bn_id']}' ", false);
 	}
 }
 

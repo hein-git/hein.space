@@ -8,8 +8,8 @@ $at = array();
 $xp = array();
 
 // APMS Version
-$yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.3.1.9' : '';
-define('APMS_VERSION', '아미나빌더 1.8.7 / 그누보드 5.3.1.9'.$yc5_ver);
+$yc5_ver = (defined('G5_USE_SHOP')) ? ' / 영카트 5.3.3' : '';
+define('APMS_VERSION', '아미나빌더 1.8.20 / 그누보드 5.3.3'.$yc5_ver);
 define('APMS_SVER', '180820');
 define('APMS_GNUVER', '5.3');
 
@@ -123,10 +123,12 @@ define('APMS_JWPLAYER6_KEY', $xp['jwplayer_key']);
 define('APMS_PIM', $pim); // Modal Win
 define('APMS_PRINT', $ipwm); // Print Win
 
+if(APMS_PIM)
+	$qstr .= '&amp;pim=1'; 
+
 // 프린트
 if(APMS_PRINT) {
 	$qstr .= '&amp;ipwm=1'; 
-	if(APMS_PIM) $qstr .= '&amp;pim=1'; 
 
 	$print_skin = $config['cf_8_subj'];
 	if(!is_file(G5_SKIN_PATH.'/print/'.$print_skin.'/print.head.php')) {

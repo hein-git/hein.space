@@ -6,7 +6,8 @@ add_stylesheet('<link rel="stylesheet" href="'.$skin_url.'/style.css" media="scr
 
 ?>
 <style>
-	.myphoto img, .myphoto i { width:<?php echo $photo_width;?>px; height:<?php echo $photo_height;?>px; }
+	.myphoto img { width:<?php echo $photo_width;?>px; height:<?php echo $photo_height;?>px; }
+	.myphoto i { width:80px; height:80px; }
 </style>
 <form name="fphotoform" class="form" role="form" method="post" enctype="multipart/form-data" autocomplete="off">
 	<input type="hidden" name="mode" value="u">

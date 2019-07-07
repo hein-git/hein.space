@@ -850,7 +850,8 @@ $sql = " CREATE TABLE IF NOT EXISTS `{$g5['apms_xp']}` (
 			`seo_img` varchar(255) NOT NULL default '',
 			`seo_key` text NOT NULL default '',
 			`seo_desc` text NOT NULL default '',
-			`spam_msg` text NOT NULL default ''
+			`spam_msg` text NOT NULL default '',
+			`feed_ip` text NOT NULL default ''
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8; ";
 
 sql_query($sql, false);
@@ -879,7 +880,7 @@ sql_query(" ALTER TABLE `{$g5['apms_xp']}` ADD `seo_img` varchar(255) NOT NULL D
 sql_query(" ALTER TABLE `{$g5['apms_xp']}` ADD `seo_key` text NOT NULL DEFAULT '' AFTER `seo_img` ", false);
 sql_query(" ALTER TABLE `{$g5['apms_xp']}` ADD `seo_desc` text NOT NULL DEFAULT '' AFTER `seo_key` ", false);
 sql_query(" ALTER TABLE `{$g5['apms_xp']}` ADD `spam_msg` text NOT NULL DEFAULT '' AFTER `seo_desc` ", false);
-
+sql_query(" ALTER TABLE `{$g5['apms_xp']}` ADD `feed_ip` text NOT NULL DEFAULT '' AFTER `spam_msg` ", false);
 
 // Like & Follow
 $sql = " CREATE TABLE IF NOT EXISTS `{$g5['apms_like']}` (

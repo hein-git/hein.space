@@ -27,6 +27,9 @@ if($board['bo_use_category']) {
         if(empty($categories))
             $ca_name = '';
 		*/
+	    $ca_name = clean_xss_tags($ca_name);
+        //$ca_name = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", "", $ca_name);
+	    $ca_name = preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\^\*]/", "", $ca_name);
 	}
 } else {
     $ca_name = '';
@@ -163,6 +166,9 @@ $boset = array();
 $boset = apms_boset();
 
 @include_once($board_skin_path.'/write_update.head.skin.php');
+
+// 태그
+$as_tag = ($as_tag) ? apms_check_tag($as_tag) : '';
 
 if ($w == '' || $w == 'u') {
 

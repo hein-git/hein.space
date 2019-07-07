@@ -9,12 +9,16 @@ $g5['title'] = '메뉴 추가';
 include_once(G5_PATH.'/head.sub.php');
 
 $code = isset($code) ? preg_replace('/[^0-9a-zA-Z]/', '', strip_tags($code)) : '';
+$sub = isset($sub) ? preg_replace('/[^0-9a-zA-Z]/', '', strip_tags($sub)) : '';
 
 // 코드
+$co_name = '&nbsp;';
 if($new == 'new' || !$code) {
     $code = base_convert(substr($code,0, 2), 36, 10);
     $code += 36;
     $code = base_convert($code, 10, 36);
+	$sub = '';
+	$co_name = '자동부여';
 }
 ?>
 
@@ -29,8 +33,13 @@ if($new == 'new' || !$code) {
             <option value="">직접입력</option>
             <option value="group">게시판그룹</option>
             <option value="board">게시판</option>
+            <option value="pid">기본문서</option>
+            <option value="hid">일반문서</option>
             <option value="content">내용관리</option>
-        </select>
+			<?php if (defined('G5_USE_SHOP') && G5_USE_SHOP) { ?>
+	            <option value="category">상품분류</option>
+			<?php } ?>
+		</select>
     </div>
 
     <div id="menu_result"></div>
@@ -120,15 +129,19 @@ function add_menu_list(name, link, code)
     var sub_menu_class;
     <?php if($new == 'new') { ?>
     sub_menu_class = " class=\"td_category\"";
-    <?php } else { ?>
+    <?php } else if($sub) { ?>
     sub_menu_class = " class=\"td_category sub_menu_class\"";
+	<?php } else { ?>
+    sub_menu_class = " class=\"td_category sub_menu_class sub_menu2\"";
     <?php } ?>
 
     var list = "<tr class=\"menu_list menu_group_<?php echo $code; ?>\">";
-    list += "<td"+sub_menu_class+">";
+    list += "<td class=\"td_mngsmall\"><?php echo $co_name;?></td>";
+	list += "<td"+sub_menu_class+">";
     list += "<label for=\"me_name_"+ms+"\"  class=\"sound_only\">메뉴<strong class=\"sound_only\"> 필수</strong></label>";
     list += "<input type=\"hidden\" name=\"code[]\" value=\"<?php echo $code; ?>\">";
-    list += "<input type=\"text\" name=\"me_name[]\" value=\""+name+"\" id=\"me_name_"+ms+"\" required class=\"required frm_input full_input\">";
+    list += "<input type=\"hidden\" name=\"sub[]\" value=\"<?php echo $sub; ?>\">";
+	list += "<input type=\"text\" name=\"me_name[]\" value=\""+name+"\" id=\"me_name_"+ms+"\" required class=\"required frm_input full_input\">";
     list += "</td>";
     list += "<td>";
     list += "<label for=\"me_link_"+ms+"\"  class=\"sound_only\">링크<strong class=\"sound_only\"> 필수</strong></label>";
@@ -162,8 +175,13 @@ function add_menu_list(name, link, code)
     list += "<td class=\"td_mngsmall\">";
     <?php if($new == 'new') { ?>
     list += "<button type=\"button\" class=\"btn_add_submenu btn\">추가</button>";
-    <?php } ?>
     list += "<button type=\"button\" class=\"btn_del_menu btn\">삭제</button>";
+	<?php } else if($sub) { ?>
+    list += "<button type=\"button\" class=\"btn_add_submenu2 btn\">추가</button>";
+    list += "<button type=\"button\" class=\"btn_del_submenu btn\">삭제</button>";
+	<?php } else { ?>
+    list += "<button type=\"button\" class=\"btn_del_menu btn\">삭제</button>";
+	<?php } ?>
     list += "</td>";
     list += "</tr>";
 

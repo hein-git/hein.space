@@ -8,7 +8,11 @@ if(!$fn && !$fd) {
 	alert('파일 정보가 존재하지 않습니다.');
 }
 
-$filename = urlencode($fn);
+if(apms_get_ext($fd)) {
+	alert('올바른 방법으로 이용해 주세요.');
+}
+
+$filename = basename(urlencode($fn));
 $filepath = G5_DATA_PATH.'/editor/'.$fd;
 $filepath = addslashes($filepath);
 

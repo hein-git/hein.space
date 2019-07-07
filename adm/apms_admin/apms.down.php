@@ -6,6 +6,9 @@ if(!$type) exit;
 // clean the output buffer
 ob_end_clean();
 
+$filename = basename(urlencode($filename));
+$filename = str_replace('../', '', $filename);
+
 switch($type) {
 	case 'main'		: $filepath = G5_DATA_PATH.'/apms/main/'.$filename; break;
 	case 'page'		: $filepath = G5_DATA_PATH.'/apms/page/'.$filename; break;

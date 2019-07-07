@@ -48,13 +48,13 @@ include_once(G5_ADMIN_PATH.'/admin.head.sub.php');
 		<tr>
             <th scope="row"><label for="as_content">PC 페이지</label></th>
             <td>
-                <?php echo editor_html("as_content", get_text($row['as_content'], 0)); ?>
+                <?php echo editor_html("as_content", get_text(html_purifier($row['as_content']), 0)); ?>
             </td>
         </tr>
         <tr>
             <th scope="row"><label for="as_mobile_content">모바일 페이지</label></th>
             <td>
-                <?php echo editor_html("as_mobile_content", get_text($row['as_mobile_content'], 0)); ?>
+                <?php echo editor_html("as_mobile_content", get_text(html_purifier($row['as_mobile_content']), 0)); ?>
             </td>
         </tr>
         </tbody>

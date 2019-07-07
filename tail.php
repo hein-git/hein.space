@@ -4,23 +4,34 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 //Level Up
 if($member['mb_id']) { 
 	//Auto Grade
-	if($xp['xp_from'] > 1 && $xp['xp_to'] >= $xp['xp_from']) {
-		if($member['mb_level'] >= $xp['xp_from'] && $member['mb_level'] <= $xp['xp_to']) {
-			$level = $member['mb_level'];
+	$level = (int)$member['mb_level'];
+	$xp_level = (int)$member['as_level'];
+	$xp_from = (int)$xp['xp_from'];
+	$xp_to = (int)$xp['xp_to'];
+	if($xp_from > 1 && $xp_to >= $xp_from) {
+		if($level >= $xp_from && $level <= $xp_to) {
+			$is_maxlevel = true;
 			$n = 1;
-			for($i = $xp['xp_from']; $i <= $xp['xp_to']; $i++) {
-				$g = 'xp_auto'.$n;
-				if($member['as_level'] < $xp[$g]) {
+			for($i = $xp_from; $i <= $xp_to; $i++) {
+				if($xp_level < (int)$xp['xp_auto'.$n]) {
 					$level = $i;
+					$is_maxlevel = false;
 					break;
 				}
 				$n++;
 			}
 
-			if($level == $member['mb_level']) {
+			//최종등급 체크
+			if($is_maxlevel) {
+				if($xp_level >= (int)$xp['xp_auto'.$xp_to]) {
+					$level = $xp_to;
+				}
+			}
+
+			if($level == (int)$member['mb_level']) {
 				;
 			} else {
-				$member['as_msg'] = ($member['mb_level'] > $level) ? 4 : 3; //3 : 등업, 4 : 다운
+				$member['as_msg'] = ((int)$member['mb_level'] > $level) ? 4 : 3; //3 : 등업, 4 : 다운
 				$member['mb_level'] = $level;
 			}
 		}

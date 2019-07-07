@@ -10,12 +10,14 @@ if (!$bo_table) {
     alert("bo_table 값이 넘어오지 않았습니다.\\nwrite.php?bo_table=code 와 같은 방식으로 넘겨 주세요.", G5_URL);
 }
 
+/*
 if (!$is_admin && $w != 'u' && isset($_SESSION['ss_datetime'])) {
     if ($_SESSION['ss_datetime'] >= (G5_SERVER_TIME - $config['cf_delay_sec'])) {
         $ss_time = $config['cf_delay_sec'] - (G5_SERVER_TIME - $_SESSION['ss_datetime']);
         alert('너무 빠른 시간내에 게시물을 연속해서 올릴 수 없습니다.\\게시물 등록은 '.$ss_time.'초 후 가능합니다.');
     }
 }
+*/
 
 check_device($board['bo_device']);
 
@@ -372,7 +374,7 @@ if (isset($write['wr_subject'])) {
 
 $content = '';
 if ($w == '') {
-    $content = $board['bo_insert_content'];
+    $content = html_purifier($board['bo_insert_content']);
 } else if ($w == 'r') {
     if (!strstr($write['wr_option'], 'html')) {
         $content = "\n\n\n &gt; "

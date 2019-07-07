@@ -2,22 +2,47 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/apms.feed.lib.php');
 
-$sql = " select gr_id, bo_subject, bo_page_rows, bo_read_level, bo_use_rss_view from {$g5['board_table']} where bo_table = '$bo_table' ";
+// 접근가능 IP
+$is_feed_ip = false;
+$pattern = explode("\n", trim($xp['feed_ip']));
+for ($i=0; $i<count($pattern); $i++) {
+	$pattern[$i] = trim($pattern[$i]);
+	if (empty($pattern[$i]))
+		continue;
+
+	$pattern[$i] = str_replace(".", "\.", $pattern[$i]);
+	$pattern[$i] = str_replace("+", "[0-9\.]+", $pattern[$i]);
+	$pat = "/^{$pattern[$i]}$/";
+	$is_feed_ip = preg_match($pat, $_SERVER['REMOTE_ADDR']);
+	if ($is_feed_ip)
+		break;
+}
+
+if (!$is_feed_ip) {
+	die('<meta charset=utf-8>접근불가!!!');
+}
+
+$sql = " select gr_id, bo_table, bo_subject, bo_page_rows, bo_read_level, bo_use_rss_view from {$g5['board_table']} where bo_table = '$bo_table' ";
 $row = sql_fetch($sql);
-$subj2 = specialchars_replace($row['bo_subject'], 255);
-$lines = $row['bo_page_rows'];
+
+// 게시판 존재유무
+if (!$row['bo_table']) {
+    die('<meta charset=utf-8>존재하지 않는 게시판입니다.');
+}
 
 // 비회원 읽기가 가능한 게시판만 RSS 지원
 if ($row['bo_read_level'] >= 2) {
-    echo '비회원 읽기가 가능한 게시판만 Feed를 지원합니다.';
-    exit;
+    die('<meta charset=utf-8>비회원 읽기가 가능한 게시판만 Feed를 지원합니다.');
 }
 
 // RSS 사용 체크
 if (!$row['bo_use_rss_view']) {
-    echo 'Feed 보기가 금지되어 있습니다.';
-    exit;
+    die('<meta charset=utf-8>Feed 보기가 금지되어 있습니다.');
 }
+
+// 값정리
+$subj2 = specialchars_replace($row['bo_subject'], 255);
+$lines = $row['bo_page_rows'];
 
 // Feed 동영상
 $is_feedvideo = true;

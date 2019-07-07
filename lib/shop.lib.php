@@ -1400,7 +1400,7 @@ function set_cart_id($direct)
     } else {
         // 비회원장바구니 cart id 쿠키설정
         if($default['de_guest_cart_use']) {
-            $tmp_cart_id = get_cookie('ck_guest_cart_id');
+            $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', get_cookie('ck_guest_cart_id'));
             if($tmp_cart_id) {
                 set_session('ss_cart_id', $tmp_cart_id);
                 //set_cookie('ck_guest_cart_id', $tmp_cart_id, ($default['de_cart_keep_term'] * 86400));
@@ -1863,19 +1863,23 @@ function get_item_sendcost2($it_id, $price, $qty)
     else
     {
         if($it['it_sc_type'] > 1) {
-            if($it['it_sc_type'] == 2) { // 조건부무료
-                if($price >= $it['it_sc_minimum'])
-                    $sendcost = 0;
-                else
+            if($it['it_sc_method'] == 1){  // 배송비 결제 설정이 착불인 경우
+                $sendcost = -1;
+            } else {    // 배송비 결제 설정이 선불 또는 사용자선택인 경우
+                if($it['it_sc_type'] == 2) { // 조건부무료
+                    if($price >= $it['it_sc_minimum'])
+                        $sendcost = 0;
+                    else
+                        $sendcost = $it['it_sc_price'];
+                } else if($it['it_sc_type'] == 3) { // 유료배송
                     $sendcost = $it['it_sc_price'];
-            } else if($it['it_sc_type'] == 3) { // 유료배송
-                $sendcost = $it['it_sc_price'];
-            } else { // 수량별 부과
-                if(!$it['it_sc_qty'])
-                    $it['it_sc_qty'] = 1;
+                } else { // 수량별 부과
+                    if(!$it['it_sc_qty'])
+                        $it['it_sc_qty'] = 1;
 
-                $q = ceil((int)$qty / (int)$it['it_sc_qty']);
-                $sendcost = (int)$it['it_sc_price'] * $q;
+                    $q = ceil((int)$qty / (int)$it['it_sc_qty']);
+                    $sendcost = (int)$it['it_sc_price'] * $q;
+                }
             }
         } else if($it['it_sc_type'] == 1) { // 무료배송
             $sendcost = 0;
@@ -2232,7 +2236,9 @@ function get_wishlist_count_by_item($it_id='')
 {
     global $g5;
 
-    $sql = "select count(a.it_id) as num from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b where a.it_id  = b.it_id";
+    if( !$it_id ) return 0;
+
+    $sql = "select count(a.it_id) as num from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b where a.it_id  = b.it_id and b.it_id = '$it_id'";
     $row = sql_fetch($sql);
 
     return (int) $row['num'];
@@ -2458,8 +2464,20 @@ function is_inicis_simple_pay(){
     return false;
 }
 
-//이니시스의 삼성페이 또는 L.pay 결제인지 확인합니다.
+//이니시스의 취소된 주문인지 또는 삼성페이 또는 L.pay 결제인지 확인합니다.
 function is_inicis_order_pay($type){
+    global $default, $g5;
+
+    if( $default['de_pg_service'] === 'inicis' && get_session('P_TID') ){
+        $tid = preg_replace('/[^A-Za-z0-9_\-]/', '', get_session('P_TID'));
+        $sql = "select P_TID from `{$g5['g5_shop_inicis_log_table']}` where P_TID = '$tid' and P_STATUS = 'cancel' ";
+
+        $row = sql_fetch($sql);
+
+        if( $row['P_TID'] ){
+            alert("이미 취소된 주문입니다.", G5_SHOP_URL);
+        }
+    }
 
     if( in_array($type, array('삼성페이', 'lpay') ) ){
         return true;

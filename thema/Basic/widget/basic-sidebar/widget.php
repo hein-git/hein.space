@@ -119,12 +119,11 @@ var sidebar_time = "<?php echo $response_check_time;?>";
 			<div id="sidebar-response-list"></div>
 		</div>
 
-		<?php if(IS_YC) { //영카트 ?>
-		<!-- Cart -->
-		<div id="sidebar-cart" class="sidebar-item">
-			<div id="sidebar-cart-list"></div>
+		<!-- databox -->
+		<div id="sidebar-databox" class="sidebar-item">
+			<?php @include_once($widget_path.'/databox.php'); ?>
 		</div>
-		<?php } ?>
+
 
 		<div class="h30"></div>
 	</div>

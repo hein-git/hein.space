@@ -19,6 +19,9 @@ if(!is_dir(G5_DATA_PATH.$filedir)) {
 	@chmod(G5_DATA_PATH.$filedir, G5_DIR_PERMISSION);
 }
 
+$filename = basename(urlencode($filename));
+$filename = str_replace('../', '', $filename);
+
 if($mode == "del") {
 	@unlink(G5_DATA_PATH.$filedir.$filename);
 } else if ($mode == "up") {

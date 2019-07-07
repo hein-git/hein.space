@@ -11,8 +11,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 			<!-- LNB Left -->
 			<div class="pull-left">
 				<ul>
-					<li><a href="javascript:;" id="favorite">즐겨찾기</a></li>
-					<li><a href="<?php echo $at_href['rss'];?>" target="_blank">RSS 구독</a></li>
 					<?php
 					  $tweek = array("일", "월", "화", "수", "목", "금", "토");
 					?>	
@@ -27,9 +25,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 						<?php if($member['admin']) {?>
 							<li><a href="<?php echo G5_ADMIN_URL;?>">관리</a></li>
 						<?php } ?>
-						<?php if($member['partner']) { ?>
-							<li><a href="<?php echo $at_href['myshop'];?>">마이샵</a></li>
-						<?php } ?>
 						<li class="sidebarLabel"<?php echo ($member['response'] || $member['memo']) ? '' : ' style="display:none;"';?>>
 							<a href="javascript:;" onclick="sidebar_open('sidebar-response');"> 
 								알림 <b class="orangered sidebarCount"><?php echo $member['response'] + $member['memo'];?></b>
@@ -39,16 +34,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 						<li><a href="<?php echo $at_href['login'];?>" onclick="sidebar_open('sidebar-user'); return false;">로그인</a></li>
 						<li><a href="<?php echo $at_href['reg'];?>">회원가입</a></li>
 						<li><a href="<?php echo $at_href['lost'];?>" class="win_password_lost">정보찾기	</a></li>
-					<?php } ?>
-					<?php if(IS_YC) { // 영카트 사용하면 ?>
-						<?php if($member['cart'] || $member['today']) { ?>
-							<li>
-								<a href="<?php echo $at_href['cart'];?>" onclick="sidebar_open('sidebar-cart'); return false;"> 
-									쇼핑 <b class="blue"><?php echo number_format($member['cart'] + $member['today']);?></b>
-								</a>
-							</li>
-						<?php } ?>
-						<li><a href="<?php echo $at_href['change'];?>"><?php echo (IS_SHOP) ? '커뮤니티' : '쇼핑몰';?></a></li>
 					<?php } ?>
 					<li><a href="<?php echo $at_href['connect'];?>">접속 <?php echo number_format($stats['now_total']); ?><?php echo ($stats['now_mb']) ? ' (<b class="orangered">'.number_format($stats['now_mb']).'</b>)' : ''; ?></a></li>
 					<?php if($is_member) { ?>
@@ -66,10 +51,10 @@ include_once(THEMA_PATH.'/assets/thema.php');
 			<!-- PC Logo -->
 			<div class="header-logo">
 				<a href="<?php echo $at_href['home'];?>">
-					AMINA
+					사람과교육
 				</a>
 				<span class="header-desc">
-					세상을 바꾸는 작은힘 - 아미나
+					 좋은 교육으로 아름다운 세상을 만들어 갑니다.
 				</span>
 			</div>
 			<!-- PC Search -->
@@ -84,7 +69,7 @@ include_once(THEMA_PATH.'/assets/thema.php');
 					</div>
 				</form>
 				<div class="header-keyword">
-					<?php echo apms_widget('basic-keyword', 'basic-keyword', 'q=베이직테마,아미나빌더,그누보드,영카트'); // 키워드 ?>
+					<?php echo apms_widget('basic-keyword', 'basic-keyword', 'q=사람과교육,연수원,교육,강의'); // 키워드 ?>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -96,20 +81,28 @@ include_once(THEMA_PATH.'/assets/thema.php');
 		<div class="at-container">
 			<div class="header-wrap">
 				<div class="header-icon">
-					<a href="javascript:;" onclick="sidebar_open('sidebar-user');">
-						<i class="fa fa-user"></i>
-					</a>
-				</div>
-				<div class="header-logo en">
-					<!-- Mobile Logo -->
-					<a href="<?php echo $at_href['home'];?>">
-						<b>아미나</b>
-					</a>
+					<a href="javascript:;" onclick="sidebar_open('sidebar-menu');"><i class="fa fa-bars"></i></a>
 				</div>
 				<div class="header-icon">
-					<a href="javascript:;" onclick="sidebar_open('sidebar-search');">
-						<i class="fa fa-search"></i>
+					<a href="javascript:;" onclick="sidebar_open('sidebar-user');"><i class="fa fa-user"></i></a>
+				</div>
+				<div class="header-icon">
+					<a href="/bbs/write.php?bo_table=notice"><i class="fa fa-pencil"></i></a>
+				</div>
+				<div class="header-logo en">
+					<a href="<?php echo $at_href['home'];?>">
+						<b>사람과교육</b>
 					</a>
+				</div>
+
+				<div class="header-icon">
+					<a href="javascript:;" onclick="sidebar_open('sidebar-search');"><i class="fa fa-search"></i></a>
+				</div>
+				<div class="header-icon">
+					<a href="javascript:;" onclick="sidebar_open('sidebar-response');"><i class="fa fa-bell"></i></a>
+				</div>
+				<div class="header-icon">
+					<a href="/bbs/mydatabox.php"><i class="fa fa-database"></i></a>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -124,18 +117,6 @@ include_once(THEMA_PATH.'/assets/thema.php');
 			<div class="at-container">
 				<div class="nav-right nav-rw nav-height">
 					<ul>
-						<?php if(IS_YC) { //영카트 ?>
-							<li class="nav-show">
-								<a href="<?php echo $at_href['cart'];?>" onclick="sidebar_open('sidebar-cart'); return false;"<?php echo tooltip('쇼핑');?>> 
-									<i class="fa fa-shopping-bag"></i>
-									<?php if($member['cart'] || $member['today']) { ?>
-										<span class="label bg-green en">
-											<?php echo number_format($member['cart'] + $member['today']);?>
-										</span>
-									<?php } ?>
-								</a>
-							</li>
-						<?php } ?>
 						<li>
 							<a href="javascript:;" onclick="sidebar_open('sidebar-response');"<?php echo tooltip('알림');?>>
 								<i class="fa fa-bell"></i>
@@ -154,6 +135,10 @@ include_once(THEMA_PATH.'/assets/thema.php');
 								<i class="fa fa-th"></i>
 							</a>
 						</li>
+						<li>
+							<a href="/bbs/mydatabox.php"><i class="fa fa-database"></i></a>
+						</li>
+						
 					</ul>
 					<div class="clearfix"></div>
 				</div>
@@ -218,14 +203,12 @@ include_once(THEMA_PATH.'/assets/thema.php');
 							<a href="javascript:;" class="btn btn-lightgray" data-toggle="collapse" data-target="#menu-all"><i class="fa fa-times"></i></a>
 						</div>
 					</div>
-				</div>
+				</divl
 			</div>
+			
 		</div><!-- .pc-menu-all -->
 
-		<!-- Mobile Menu -->
-		<div class="m-menu">
-			<?php include_once(THEMA_PATH.'/menu-m.php');	// 메뉴 불러오기 ?>
-		</div><!-- .m-menu -->
+		
 	</nav><!-- .at-menu -->
 
 	<div class="clearfix"></div>

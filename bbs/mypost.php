@@ -142,9 +142,12 @@ if($mode == "3" || $mode == "4" || $mode == "5") { // 아이템 댓글, 후기, 
 	$from_record = ($page - 1) * $rows; // 시작 열을 구함
 
 	$group_select = '';
-	$sql = " select gr_id, gr_subject from {$g5['group_table']} order by gr_id ";
+	$sql = " select gr_id, gr_subject, as_grade, as_equal, as_min, as_max from {$g5['group_table']} where as_show <> '0' order by gr_order, gr_id ";
 	$result = sql_query($sql);
 	for ($i=0; $row=sql_fetch_array($result); $i++) {
+		if(apms_auth($row['as_grade'], $row['as_equal'], $row['as_min'], $row['as_max'], 1)) {
+			continue;
+		}
 		$group_select .= "<option value=\"".$row['gr_id']."\">".$row['gr_subject'].'</option>';
 	}
 

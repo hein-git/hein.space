@@ -155,6 +155,17 @@ if ($url) {
             $split = "&amp;";
         }
     }
+
+	// 도메인 붙이기
+	$p = @parse_url($link);
+	if(!isset($p['host']) || !$p['host']) {
+		if(G5_URL) {
+			$pu = @parse_url(G5_URL);
+			$host_url = (isset($pu['path']) && $pu['path']) ? str_replace($pu['path'], '', G5_URL) : G5_URL;
+			$link = $host_url.$link;
+		}
+	}
+
 } else  {
     $link = G5_URL;
 }

@@ -88,10 +88,12 @@ for ($i=0; $post=sql_fetch_array($result); $i++) {
 
 		$row['wr_content'] = $head_file.apms_link_video($row['link']).apms_content($row['wr_content']).$tail_file;
 	}
+
+	$post_url = G5_BBS_URL .'/board.php?bo_table='.$post['bo_table'].'&amp;wr_id='.$post['wr_id'];
 ?>
 	<item>
 	<title><?php echo specialchars_replace('['.$board['bo_subject'].'] '.$row['wr_subject']) ?></title>
-	<link><?php echo specialchars_replace(G5_BBS_URL.'/board.php?bo_table='.$post['bo_table'].'&wr_id='.$post['wr_id']) ?></link>
+	<link><?php echo $post_url; ?></link>
 	<description><![CDATA[<?php echo $row['wr_content']; ?>]]></description>
 	<dc:creator><?php echo specialchars_replace($row['wr_name']) ?></dc:creator>
 	<?php
@@ -100,7 +102,8 @@ for ($i=0; $post=sql_fetch_array($result); $i++) {
 	//$date = substr($date,0,10) . "T" . substr($date,11,8) . "+09:00";
 	$date = date('r', strtotime($date));
 	?>
-	<dc:date><?php echo $date ?></dc:date>
+	<pubDate><?php echo $date ?></pubDate>
+	<guid><?php echo $post_url; ?></guid>
 	</item>
 <?php } ?>
 </channel>

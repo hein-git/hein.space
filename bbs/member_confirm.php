@@ -11,8 +11,10 @@ else
     $urlencode = urlencode($_SERVER[REQUEST_URI]);
 */
 
+$url = clean_xss_tags($_GET['url']);
+
 //소셜 로그인 한 경우
-if( function_exists('social_member_comfirm_redirect') ){    
+if( function_exists('social_member_comfirm_redirect') && (! $url || $url === 'register_form.php' || (function_exists('social_is_edit_page') && social_is_edit_page($url) ) ) ){    
     social_member_comfirm_redirect();
 }
 
@@ -48,13 +50,15 @@ if(is_file($skin_path.'/setup.skin.php') && ($is_demo || $is_designer)) {
 	$setup_href = './skin.setup.php?skin=member&amp;ts='.urlencode(THEMA);
 }
 
-$url = clean_xss_tags($_GET['url']);
-
 // url 체크
 check_url_host($url, '', G5_URL, true);
 
-if( preg_match('#^/{3,}#', $url) ){
-    $url = preg_replace('#^/{3,}#', '/', $url);
+if($url){
+    $url = preg_replace('#^/\\\{1,}#', '/', $url);
+
+    if( preg_match('#^/{3,}#', $url) ){
+        $url = preg_replace('#^/{3,}#', '/', $url);
+    }
 }
 
 $url = get_text($url);
